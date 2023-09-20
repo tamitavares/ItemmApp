@@ -51,7 +51,7 @@ export default ProgressoJovem = () => {
     </View>
   );
 };
-//<View style={{...styles.rectangle,top: 511,width: 318,}} />
+
 const dados = {
   avaliacao: [
     ['Dia', 'Nome da prova', 'Nota'],

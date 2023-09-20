@@ -89,13 +89,6 @@ const styles = StyleSheet.create({
     top: 32,
     width: 179,
   },
-  rectangle: {
-    backgroundColor: "#99cc6a",
-    borderRadius: 10,
-    height: 123,
-    left: 21,
-    position: "absolute",
-  }, 
   textWrapper: {
     color: "#000000",
     //fontFamily: "Roboto-Bold",

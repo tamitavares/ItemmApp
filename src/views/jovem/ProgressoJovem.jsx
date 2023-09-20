@@ -1,13 +1,46 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
+import {Table, Row} from 'react-native-table-component';
 
 export default ProgressoJovem = () => {
   return (
     <View style={styles.progressoJovem}>
       <View style={styles.div}>
         <Image style={styles.image} source={require('../images/logo.png')} />
-        <View style={{...styles.rectangle,top: 314,width: 318,}} />
-        <View style={{...styles.rectangle,top: 511,width: 318,}} />
+        
+        <Table borderStyle={{borderColor: 'Black'}}>
+          {tabelaAvaliacao.map((rowData, index) => (
+            <Row
+              key={index}
+              data={rowData}
+              style={[
+                { ...styles.table, top: 314,  height: 25, backgroundColor: index === 0 ? '#99cc6a' : '#ffffff'}, 
+                { borderTopWidth: 1, borderBottomWidth: 1, borderColor: 'black' },
+                index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 }, 
+                index === tabelaAvaliacao.length - 1 && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
+              ]}
+              textStyle={{ textAlign: 'center'}}
+            />
+          ))}
+        </Table>
+        
+        <Table borderStyle={{borderColor: 'Black'}}>
+          {tabelaPresenca.map((rowData, index) => (
+            <Row
+              key={index}
+              data={rowData}
+              style={[
+                { ...styles.table, top:380,  height: 25, backgroundColor: index === 0 ? '#99cc6a' : '#ffffff'}, 
+                { borderTopWidth: 1, borderBottomWidth: 1, borderColor: 'black' },
+                index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 }, 
+                index === tabelaPresenca.length - 1 && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
+              ]}
+              textStyle={{ textAlign: 'center'}}
+            />
+          ))}
+        </Table>
+
+        
         <Text style={{...styles.textWrapper,top: 274}}>Avaliações:</Text>
         <Text style={{...styles.textWrapper,top: 472}}>Presença:</Text>
         <Text style={styles.textWrapper2}>Sair</Text>
@@ -16,6 +49,27 @@ export default ProgressoJovem = () => {
     </View>
   );
 };
+
+const dados = {
+  avaliacao: [
+    ['Dia', 'Nome da prova', 'Nota'],
+    ['01/02/2023', 'Prova 1', '2'],
+    ['02/02/2023', 'Prova 2', '2'],
+    ['03/02/2023', 'Prova 3', '1'],
+    ['04/02/2023', 'Prova 4', '0'],
+  ],
+  presenca: [
+    ['Dia', 'Presença'],
+    ['01/02/2023', 'Presente'],
+    ['02/02/2023', 'Presente'],
+    ['03/02/2023', 'Ausente'],
+    ['04/02/2023', 'Presente'],
+  ],
+};
+
+const tabelaAvaliacao = dados.avaliacao;
+const tabelaPresenca = dados.presenca;
+
 
 const styles = StyleSheet.create({
   progressoJovem: {
@@ -39,13 +93,6 @@ const styles = StyleSheet.create({
     top: 32,
     width: 179,
   },
-  rectangle: {
-    backgroundColor: "#99cc6a",
-    borderRadius: 10,
-    height: 123,
-    left: 21,
-    position: "absolute",
-  }, 
   textWrapper: {
     color: "#000000",
     //fontFamily: "Roboto-Bold",
@@ -74,5 +121,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     position: "absolute",
     top: 185,
+  },
+  table: {
+    width: 318,
+    left: 21,
+    maxHeight: 125,
   },
 });

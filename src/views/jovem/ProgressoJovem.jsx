@@ -8,8 +8,6 @@ export default ProgressoJovem = () => {
       <View style={styles.div}>
         <Image style={styles.image} source={require('../images/logo.png')} />
         
-        
-        
         <Table borderStyle={{borderColor: 'Black'}}>
           {tabelaAvaliacao.map((rowData, index) => (
             <Row

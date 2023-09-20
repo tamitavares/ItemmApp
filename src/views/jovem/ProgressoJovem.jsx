@@ -52,20 +52,26 @@ export default ProgressoJovem = () => {
   );
 };
 //<View style={{...styles.rectangle,top: 511,width: 318,}} />
-const tabelaAvaliacao =[
-['Dia', 'Nome da prova', 'Nota'],
-['01/02/2023', 'Prova 1', '2'],
-['02/02/2023', 'Prova 2', '2'],
-['03/02/2023', 'Prova 3', '1'],
-['04/02/2023', 'Prova 4', '0'],
-]
-const tabelaPresenca =[
-  ['Dia', 'Presença'],
-  ['01/02/2023', 'Presente'],
-  ['02/02/2023', 'Ausente'],
-  ['03/02/2023', 'Ausente'],
-  ['04/02/2023', 'Presente'],
-  ]
+const dados = {
+  avaliacao: [
+    ['Dia', 'Nome da prova', 'Nota'],
+    ['01/02/2023', 'Prova 1', '2'],
+    ['02/02/2023', 'Prova 2', '2'],
+    ['03/02/2023', 'Prova 3', '1'],
+    ['04/02/2023', 'Prova 4', '0'],
+  ],
+  presenca: [
+    ['Dia', 'Presença'],
+    ['01/02/2023', 'Presente'],
+    ['02/02/2023', 'Presente'],
+    ['03/02/2023', 'Ausente'],
+    ['04/02/2023', 'Presente'],
+  ],
+};
+
+const tabelaAvaliacao = dados.avaliacao;
+const tabelaPresenca = dados.presenca;
+
 
 const styles = StyleSheet.create({
   progressoJovem: {

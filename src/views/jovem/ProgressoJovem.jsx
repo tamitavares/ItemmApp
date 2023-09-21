@@ -1,32 +1,75 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
+import {Table, Row} from 'react-native-table-component';
 
 export default ProgressoJovem = () => {
   return (
     <View style={styles.progressoJovem}>
       <View style={styles.div}>
         <Image style={styles.image} source={require('../images/logo.png')} />
-        <View style={styles.overlap}>
-          <Text style={styles.textWrapper}>Certificado</Text>
-        </View>
-        <View style={styles.overlapGroup}>
-          <Text style={styles.textWrapper2}>Progresso</Text>
-        </View>
-        <View style={styles.overlapGroup2}>
-          <View style={styles.rectangle} />
-          <View style={styles.rectangle} />
-          <Text style={styles.textWrapper3}>Mensagens</Text>
-        </View>
-        <View style={styles.rectangle2} />
-        <View style={styles.rectangle3} />
-        <Text style={styles.textWrapper4}>Avaliações:</Text>
-        <Text style={styles.textWrapper5}>Presença:</Text>
-        <Text style={styles.textWrapper6}>Sair</Text>
+        
+        <Table borderStyle={{borderColor: 'Black'}}>
+          {tabelaAvaliacao.map((rowData, index) => (
+            <Row
+              key={index}
+              data={rowData}
+              style={[
+                { ...styles.table, top: 314,  height: 25, backgroundColor: index === 0 ? '#99cc6a' : '#ffffff'}, 
+                { borderTopWidth: 1, borderBottomWidth: 1, borderColor: 'black' },
+                index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 }, 
+                index === tabelaAvaliacao.length - 1 && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
+              ]}
+              textStyle={{ textAlign: 'center'}}
+            />
+          ))}
+        </Table>
+        
+        <Table borderStyle={{borderColor: 'Black'}}>
+          {tabelaPresenca.map((rowData, index) => (
+            <Row
+              key={index}
+              data={rowData}
+              style={[
+                { ...styles.table, top:380,  height: 25, backgroundColor: index === 0 ? '#99cc6a' : '#ffffff'}, 
+                { borderTopWidth: 1, borderBottomWidth: 1, borderColor: 'black' },
+                index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 }, 
+                index === tabelaPresenca.length - 1 && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
+              ]}
+              textStyle={{ textAlign: 'center'}}
+            />
+          ))}
+        </Table>
+
+        
+        <Text style={{...styles.textWrapper,top: 274}}>Avaliações:</Text>
+        <Text style={{...styles.textWrapper,top: 472}}>Presença:</Text>
+        <Text style={styles.textWrapper2}>Sair</Text>
         <Text style={styles.p}>Aqui está o seu progresso:</Text>
       </View>
     </View>
   );
 };
+
+const dados = {
+  avaliacao: [
+    ['Dia', 'Nome da prova', 'Nota'],
+    ['01/02/2023', 'Prova 1', '2'],
+    ['02/02/2023', 'Prova 2', '2'],
+    ['03/02/2023', 'Prova 3', '1'],
+    ['04/02/2023', 'Prova 4', '0'],
+  ],
+  presenca: [
+    ['Dia', 'Presença'],
+    ['01/02/2023', 'Presente'],
+    ['02/02/2023', 'Presente'],
+    ['03/02/2023', 'Ausente'],
+    ['04/02/2023', 'Presente'],
+  ],
+};
+
+const tabelaAvaliacao = dados.avaliacao;
+const tabelaPresenca = dados.presenca;
+
 
 const styles = StyleSheet.create({
   progressoJovem: {
@@ -50,112 +93,16 @@ const styles = StyleSheet.create({
     top: 32,
     width: 179,
   },
-  overlap: {
-    backgroundColor: "#263868",
-    height: 47,
-    left: 73,
-    position: "absolute",
-    top: 755,
-    width: 69,
-  },
   textWrapper: {
-    color: "#ffffff",
-    //fontFamily: "Roboto-Regular",
-    fontSize: 14,
-    fontWeight: "400",
-    left: 0,
+    color: "#000000",
+    //fontFamily: "Roboto-Bold",
+    fontSize: 20,
+    fontWeight: "700",
+    left: 21,
     letterSpacing: 0,
     position: "absolute",
-    textAlign: "center",
-    top: 17,
-    width: 69,
-  },
-  overlapGroup: {
-    backgroundColor: "#263868",
-    height: 47,
-    left: 145,
-    position: "absolute",
-    top: 755,
-    width: 69,
   },
   textWrapper2: {
-    color: "#ffffff",
-    //fontFamily: "Roboto-Regular",
-    fontSize: 14,
-    fontWeight: "400",
-    left: 1,
-    letterSpacing: 0,
-    position: "absolute",
-    textAlign: "center",
-    top: 17,
-    width: 69,
-  },
-  overlapGroup2: {
-    height: 47,
-    left: 218,
-    position: "absolute",
-    top: 755,
-    width: 70,
-  },
-  rectangle: {
-    backgroundColor: "#263868",
-    height: 47,
-    left: 0,
-    position: "absolute",
-    top: 0,
-    width: 69,
-  },
-  textWrapper3: {
-    color: "#ffffff",
-    //fontFamily: "Roboto-Regular",
-    fontSize: 12,
-    fontWeight: "400",
-    left: 1,
-    letterSpacing: 0,
-    position: "absolute",
-    textAlign: "center",
-    top: 16,
-    width: 69,
-  },
-  rectangle2: {
-    backgroundColor: "#99cc6a",
-    borderRadius: 10,
-    height: 123,
-    left: 21,
-    position: "absolute",
-    top: 314,
-    width: 318,
-  },
-  rectangle3: {
-    backgroundColor: "#99cc6a",
-    borderRadius: 10,
-    height: 123,
-    left: 21,
-    position: "absolute",
-    top: 511,
-    width: 318,
-  },
-  textWrapper4: {
-    color: "#000000",
-    //fontFamily: "Roboto-Bold",
-    fontSize: 20,
-    fontWeight: "700",
-    left: 21,
-    letterSpacing: 0,
-    position: "absolute",
-    top: 274,
-  },
-  textWrapper5: {
-    color: "#000000",
-    //fontFamily: "Roboto-Bold",
-    fontSize: 20,
-    fontWeight: "700",
-    left: 21,
-    letterSpacing: 0,
-    position: "absolute",
-    top: 472,
-  },
-  textWrapper6: {
     color: "#263868",
     //fontFamily: "Roboto-Medium",
     fontSize: 14,
@@ -174,5 +121,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     position: "absolute",
     top: 185,
+  },
+  table: {
+    width: 318,
+    left: 21,
+    maxHeight: 125,
   },
 });

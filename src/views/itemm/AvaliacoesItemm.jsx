@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert} from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert, ScrollView} from 'react-native'
 import React from 'react'
 
 import { MultipleSelectList } from 'react-native-dropdown-select-list'
@@ -52,76 +52,76 @@ const AvaliacoesItemm = () => {
   return (
     <View style={styles.tela}>
       <Text style={styles.title}>Avaliações</Text>
-        <Image
+        {/* <Image
           style={styles.image}
           source={require('../images/logo.png')}
-        />
-        <View style={{...styles.selecoesNotas, top: 248}}>
+        /> */}
+        <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Turma   </Text>
             <MultipleSelectList 
             setSelected={(val) => setSelected(val)} 
             data={turma} 
             save="value"
             onSelect={() => alert(selected)} 
-            label="Turma"
+            // label="Turma"
           />
         </View>
-        <View style={{...styles.selecoesNotas, top: 248}}>
+        <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Nome   </Text>
             <MultipleSelectList 
             setSelected={(val) => setSelected(val)} 
             data={nome} 
             save="value"
             onSelect={() => alert(selected)} 
-            label="Nome"
+            // label="Nome"
           />
         </View>
-        <View style={{...styles.selecoesNotas, top: 248}}>
+        <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Data da Avaliação   </Text>
             <MultipleSelectList 
             setSelected={(val) => setSelected(val)} 
             data={dataAvaliacao} 
             save="value"
             onSelect={() => alert(selected)} 
-            label="Data da Avaliação"
+            // label="Data da Avaliação"
           />
         </View>
-        <View style={{...styles.selecoesNotas, top: 248}}>
+        <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Cumprimento de Metas   </Text>
             <MultipleSelectList 
             setSelected={(val) => setSelected(val)} 
             data={metas} 
             save="value"
             onSelect={() => alert(selected)} 
-            label="Cumprimento de Metas"
+            // label="Cumprimento de Metas"
           />
         </View>
-        <View style={{...styles.selecoesNotas, top: 248}}>
+        <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Habilidade Técnica   </Text>
             <MultipleSelectList 
             setSelected={(val) => setSelected(val)} 
             data={habilidade} 
             save="value"
             onSelect={() => alert(selected)} 
-            label="Habilidade Técnica"
+            // label="Habilidade Técnica"
           />
         </View>
-        <View style={{...styles.selecoesNotas, top: 248}}>
+        <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Relacionamento Interpessoal   </Text>
             <MultipleSelectList 
             setSelected={(val) => setSelected(val)} 
             data={relacionamento} 
             save="value"
             onSelect={() => alert(selected)} 
-            label="Relacionamento Interpessoal"
+            // label="Relacionamento Interpessoal"
           />
         </View>
         <View>
             <TouchableOpacity
-            style={styles.entrar}
+            style={styles.enviar}
             onPress={enviarNotas}
             >
-            <Text style={styles.text}>Entrar</Text>
+            <Text style={styles.text}>Enviar</Text>
             </TouchableOpacity>
         </View>
     </View>
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     left: 21,
     position: 'absolute',
     textAlign: 'left',
-    top: 185,
+    top: 32,
   },
   selecao: {
     color: '#000000',
@@ -166,13 +166,13 @@ const styles = StyleSheet.create({
     justifyContent: 'left',
     width: 355
   },
-  entrar: {
+  enviar: {
     backgroundColor: '#263868',
     height: 35,
     width: 152,
     justifyContent: 'center',
     alignItems: 'center',
-    top: 260,
+    top: 240,
     borderRadius: 10,
   },
   text: {

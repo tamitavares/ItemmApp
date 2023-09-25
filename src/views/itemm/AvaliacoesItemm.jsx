@@ -50,6 +50,7 @@ const AvaliacoesItemm = () => {
 
 
   return (
+    <ScrollView style={{flexGrow: 1}}>
     <View style={styles.tela}>
       <Text style={styles.title}>Avaliações</Text>
         {/* <Image
@@ -124,8 +125,9 @@ const AvaliacoesItemm = () => {
             <Text style={styles.text}>Enviar</Text>
             </TouchableOpacity>
         </View>
+        <View style={{ height: 800 }}></View>
     </View>
-    
+    </ScrollView>
   )
 }
 

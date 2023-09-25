@@ -1,44 +1,56 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
 import {Table, Row} from 'react-native-table-component';
 
 export default ProgressoJovem = () => {
   return (
+    <ScrollView>
     <View style={styles.progressoJovem}>
       <View style={styles.div}>
         <Image style={styles.image} source={require('../images/logo.png')} />
         
-        <Table borderStyle={{borderColor: 'Black'}}>
-          {tabelaAvaliacao.map((rowData, index) => (
-            <Row
-              key={index}
-              data={rowData}
-              style={[
-                { ...styles.table, top: 314,  height: 25, backgroundColor: index === 0 ? '#99cc6a' : '#ffffff'}, 
-                { borderTopWidth: 1, borderBottomWidth: 1, borderColor: 'black' },
-                index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 }, 
-                index === tabelaAvaliacao.length - 1 && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
-              ]}
-              textStyle={{ textAlign: 'center'}}
-            />
-          ))}
-        </Table>
-        
-        <Table borderStyle={{borderColor: 'Black'}}>
-          {tabelaPresenca.map((rowData, index) => (
-            <Row
-              key={index}
-              data={rowData}
-              style={[
-                { ...styles.table, top:380,  height: 25, backgroundColor: index === 0 ? '#99cc6a' : '#ffffff'}, 
-                { borderTopWidth: 1, borderBottomWidth: 1, borderColor: 'black' },
-                index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 }, 
-                index === tabelaPresenca.length - 1 && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
-              ]}
-              textStyle={{ textAlign: 'center'}}
-            />
-          ))}
-        </Table>
+    <Table borderStyle={{ borderColor: 'Black' }}>
+      {tabelaAvaliacao.map((rowData, index) => (
+        <Row
+          key={index}
+          data={rowData}
+          style={{
+            ...styles.table,
+            top: 314,
+            height: 25,
+            backgroundColor: index === 0 ? '#99cc6a' : '#ffffff',
+            borderColor: 'black',
+            borderTopWidth: 1,
+            borderBottomWidth: 1,
+            ...(index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 }),
+            ...(index === tabelaAvaliacao.length - 1 && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }),
+          }}
+          textStyle={{ textAlign: 'center' }}
+        />
+      ))}
+    </Table>
+
+<Table borderStyle={{ borderColor: 'Black' }}>
+  {tabelaPresenca.map((rowData, index) => (
+    <Row
+      key={index}
+      data={rowData}
+      style={{
+        ...styles.table,
+        top: 380,
+        height: 25,
+        backgroundColor: index === 0 ? '#99cc6a' : '#ffffff',
+        borderColor: 'black',
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        ...(index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 }),
+        ...(index === tabelaPresenca.length - 1 && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }),
+      }}
+      textStyle={{ textAlign: 'center' }}
+    />
+  ))}
+</Table>
+
 
         
         <Text style={{...styles.textWrapper,top: 274}}>Avaliações:</Text>
@@ -47,6 +59,7 @@ export default ProgressoJovem = () => {
         <Text style={styles.p}>Aqui está o seu progresso:</Text>
       </View>
     </View>
+    </ScrollView>
   );
 };
 

@@ -25,7 +25,7 @@ export default ProgressoJovem = () => {
             ...(index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 }),
             ...(index === tabelaAvaliacao.length - 1 && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }),
           }}
-          textStyle={{ textAlign: 'center' }}
+          // textStyle={{ textAlign: 'center' }}
         />
       ))}
     </Table>
@@ -46,7 +46,7 @@ export default ProgressoJovem = () => {
         ...(index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 }),
         ...(index === tabelaPresenca.length - 1 && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }),
       }}
-      textStyle={{ textAlign: 'center' }}
+      // textStyle={{ textAlign: 'center' }}
     />
   ))}
 </Table>

@@ -125,7 +125,7 @@ const AvaliacoesItemm = () => {
             <Text style={styles.text}>Enviar</Text>
             </TouchableOpacity>
         </View>
-        <View style={{ height: 800 }}></View>
+        <View style={{ height: 500 }}></View>
     </View>
     </ScrollView>
   )

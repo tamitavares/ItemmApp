@@ -15,7 +15,7 @@ function ItemmTabs() {
   return (
     <Tab.Navigator>
       <Tab.Screen 
-        name="Mensagens Itemm" 
+        name="Mensagens" 
         component={HomeItemm}
         options={{
           tabBarLabel: "Mensagens",
@@ -25,7 +25,7 @@ function ItemmTabs() {
         }} 
       />
       <Tab.Screen 
-        name="Certificado Itemm" 
+        name="Certificado" 
         component={CertificadoItemm}
         options={{
           tabBarLabel: "Certificado",
@@ -35,7 +35,7 @@ function ItemmTabs() {
         }} 
       />
       <Tab.Screen 
-        name="Presença Itemm" 
+        name="Presença" 
         component={PresencaItemm}
         options={{
           tabBarLabel: "Presença",
@@ -45,7 +45,7 @@ function ItemmTabs() {
         }} 
       />
       <Tab.Screen 
-        name="Avaliações Itemm" 
+        name="Avaliações" 
         component={AvaliacoesItemm}
         options={{
           tabBarLabel: "Avaliações",
@@ -55,7 +55,7 @@ function ItemmTabs() {
         }} 
       />
       <Tab.Screen 
-        name="Análises Itemm" 
+        name="Análises" 
         component={AnalisesItemm}
         options={{
           tabBarLabel: "Análises",

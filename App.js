@@ -18,10 +18,12 @@ function MyStackNavigator() {
       <Stack.Screen 
         name="NavigatorJovem" 
         component={NavigatorJovem}
+        options={{headerShown: false}}
       />
       <Stack.Screen 
         name="NavigatorItemm" 
         component={NavigatorItemm}
+        options={{headerShown: false}}
       />
     </Stack.Navigator>
   );

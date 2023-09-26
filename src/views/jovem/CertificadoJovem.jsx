@@ -19,14 +19,14 @@ export default CertificadoJovem = () => {
           source={require('../images/logo.png')}
         />
         
-        <View style={{...styles.button, left: 68, top: 468}}>
+        <View style={styles.button}>
           <Button
           onPress={solicitarCertificado}
           title="Solicitar certificado"
           color='#263868'
           />
         </View>
-        <View style={{...styles.button, left: 68, top: 556}}>
+        <View style={styles.button}>
           <Button
           onPress={baixarCertificado}
           title="Baixar certificado"
@@ -66,10 +66,16 @@ const styles = StyleSheet.create({
     width: 179,
   },
   button: {
-    borderRadius: 30,
+    backgroundColor: '#263868',
     height: 53,
-    position: 'absolute',
     width: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: 210,
+    borderRadius: 10,
+    marginBottom: 10,
+    left: 68,
+    top: 468
   },
   buttonText: {
     color: '#ffffff',

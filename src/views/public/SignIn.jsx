@@ -1,198 +1,138 @@
-import React from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from "react-native";
+import React, { useState } from 'react';
+import { View, Alert, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { app } from './../../../firebaseConfig'
+import { useNavigation } from '@react-navigation/native';
 
-export default SignIn = () => {
+const SignIn = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const navigation = useNavigation();
+
+  const navigateToSignUp = () => {
+    navigation.navigate('SignUp');
+  };
+
+  const navigateToNavigator = () => {
+    navigation.navigate('Navigator');
+  };
+
+  const auth = getAuth(app); 
+
+  const authSignIn = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log("Login de usuário:", user);
+        Alert.alert("Usuário logado");
+        navigateToNavigator();
+      })
+      .catch(error => {
+        console.error("Usuário não registrado:", error);
+      });
+  };
+  
   return (
-    <View style={styles.container}>
-      <View style={styles.div}>
-        <Text style={styles.textWrapper}>Bem vindo ao ITEMM</Text>
-        <Text style={styles.p}>Faça login na sua conta:</Text>
-        <Text style={styles.textWrapper2}>Instituto Técnico Educacional Mirian Menchini</Text>
-        <View style={styles.overlapGroup}>
-          <Text style={styles.textWrapper3}>Email</Text>
+        
+        <View style={styles.tela}>
+            <Text style={styles.titulo}>Bem vindo!</Text>
+            <Image source={require('./../images/logo.png')} style={styles.logo}/>
+            <Text style={{...styles.texto, top: 280, maxWidth: 320}}>Faça login na sua conta:</Text>
+              <TextInput
+              style={{...styles.textInputs, top: 110}}
+              placeholder="   Email"
+              placeholderTextColor="white" 
+              onChangeText={(text) => setEmail(text)}
+              value={email}
+              keyboardType="email-address"
+            /> 
+              <TextInput
+              style={{...styles.textInputs}}
+              placeholder="   Senha"
+              placeholderTextColor="white" 
+              onChangeText={(text) => setPassword(text)}
+              value={password}
+              secureTextEntry={true}
+            />            
+
+            <TouchableOpacity
+            style={styles.buttonEntrar}
+            onPress={authSignIn}
+            >
+            <Text style={styles.textButtonEntrar}>Entrar</Text>
+            </TouchableOpacity>
+            
         </View>
-        <View style={styles.overlap}>
-          <View style={styles.rectangle} />
-          <TouchableOpacity style={styles.celular}>
-            <Text style={styles.textWrapper4}>Entrar</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.celularWrapper}>
-          <View style={styles.divWrapper}>
-            <Text style={styles.textWrapper5}>Cadastre-se</Text>
-          </View>
-        </View>
-        <View style={styles.overlap2}>
-          <Text style={styles.textWrapper3}>Senha</Text>
-        </View>
-        <Text style={styles.textWrapper6}>Ainda não tem conta?</Text>
-        <Text style={styles.textWrapper7}>Esqueceu a senha?</Text>
-        <Image style={styles.image} source={require('./images/logo.png')} />
-      </View>
-    </View>
-  );
-};
+      );
+    };
+
+
+
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#ecfddc",
+  logo:{
+    height: 150,
+    resizeMode: 'cover', 
+    top: 0,
+    width: 150,
+    margin: 40
+  },
+  tela: {
+    backgroundColor: '#fafafa',
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    width: "100%",
+    alignItems: 'center',
   },
-  div: {
-    backgroundColor: "#ecfddc",
-    height: 800,
-    position: "relative",
-    width: 360,
-  },
-  textWrapper: {
-    color: "#000000",
-    //fontFamily: "Roboto-Bold",
+  titulo: {
+    color: '#000000',
     fontSize: 23,
-    fontWeight: "700",
-    left: 19,
-    letterSpacing: 0,
-    position: "absolute",
-    top: 244,
+    fontWeight: '700',
+    left: 40,
+    position: 'absolute',
+    top: 240,
   },
-  p: {
-    color: "#000000",
-    //fontFamily: "Roboto-Regular",
-    fontSize: 14,
-    fontWeight: "400",
-    left: 21,
-    letterSpacing: 0,
-    position: "absolute",
-    top: 354,
-  },
-  textWrapper2: {
-    color: "#000000",
-    //fontFamily: "Roboto-Medium",
-    fontSize: 14,
-    fontWeight: "500",
-    left: 19,
-    letterSpacing: 0,
-    position: "absolute",
-    top: 281,
-  },
-  overlapGroup: {
-    backgroundColor: "#99cc6a",
+  textInputs: {
+    backgroundColor: '#99CC6A',
     borderRadius: 10,
     height: 35,
-    left: 18,
-    position: "absolute",
-    top: 404,
     width: 318,
+    top: 110,
+    margin: 10,
+    fontSize: 16,
+    marginBottom: 10,
+    paddingLeft: 10,
   },
-  textWrapper3: {
-    color: "#000000",
-    //fontFamily: "Roboto-Regular",
-    fontSize: 14,
-    fontWeight: "400",
-    left: 14,
-    letterSpacing: 0,
-    position: "absolute",
-    top: 8,
-  },
-  overlap: {
-    height: 35,
-    left: 272,
-    position: "absolute",
+  texto: {
+    color: '#000000',
+    fontSize: 16,
+    fontWeight: '500',
+    left: 41,
+    position: 'absolute',
     top: 514,
-    width: 72,
   },
-  rectangle: {
-    backgroundColor: "#263868",
-    borderRadius: 10,
+  buttonCadastrar: {
+    color: '#b71fff',
+    fontSize: 16,
+    position: 'absolute',
+    top: 210,
+    left: '17%'
+  },
+  buttonEntrar:{
+    backgroundColor: '#263868',
     height: 35,
-    left: 5,
-    position: "absolute",
-    top: 0,
-    width: 60,
-  },
-  celular: {
-    height: 16,
-    left: 0,
-    position: "absolute",
-    top: 9,
-    width: 72,
-  },
-  textWrapper4: {
-    color: "#ffffff",
-    //fontFamily: "Roboto-Regular",
-    fontSize: 14,
-    fontWeight: "400",
-    left: 0,
-    letterSpacing: 0,
-    position: "absolute",
-    textAlign: "center",
-    top: 0,
-    width: 70,
-  },
-  celularWrapper: {
-    backgroundColor: "#263868",
+    width: 130,
+    position: 'absolute',
+    top: 500,
+    right:'10%',
     borderRadius: 10,
-    height: 35,
-    left: 242,
-    position: "absolute",
-    top: 609,
-    width: 100,
+    justifyContent: 'center',
   },
-  divWrapper: {
-    height: 16,
-    left: 8,
-    position: "relative",
-    top: 9,
-    width: 88,
-  },
-  textWrapper5: {
-    color: "#ffffff",
-    //fontFamily: "Roboto-Regular",
-    fontSize: 14,
-    fontWeight: "400",
-    left: 0,
-    letterSpacing: 0,
-    position: "absolute",
-    textAlign: "center",
-    top: 0,
-    width: 86,
-  },
-  overlap2: {
-    backgroundColor: "#99cc6a",
-    borderRadius: 10,
-    height: 35,
-    left: 18,
-    position: "absolute",
-    top: 455,
-    width: 318,
-  },
-  textWrapper6: {
-    color: "#000000",
-    //fontFamily: "Roboto-Regular",
-    fontSize: 14,
-    fontWeight: "400",
-    left: 19,
-    letterSpacing: 0,
-    position: "absolute",
-    top: 617,
-  },
-  textWrapper7: {
-    color: "#263868",
-    //fontFamily: "Roboto-Medium",
-    fontSize: 14,
-    fontWeight: "500",
-    left: 21,
-    letterSpacing: 0,
-    position: "absolute",
-    top: 522,
-  },
-  image: {
-    height: 131,
-    left: 63,
-    position: "absolute",
-    top: 57,
-    width: 219,
-  },
+  textButtonEntrar:{
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+  }
 });
+
+export default SignIn

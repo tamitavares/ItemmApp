@@ -4,7 +4,6 @@ import CertificadoJovem from '../jovem/CertificadoJovem'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import SignUpJovem from '../jovem/SignUpJovem';
 
 const Tab = createBottomTabNavigator();
 
@@ -37,8 +36,7 @@ function JovemTabs() {
 
 const NavigatorJovem = () => {
     return (
-      // <JovemTabs />
-      <SignUpJovem/>
+      <JovemTabs />
     )
   }
   

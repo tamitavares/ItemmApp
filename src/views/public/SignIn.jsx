@@ -1,24 +1,29 @@
 import React, { useState } from 'react';
 import { View, Alert, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { app } from './../../../firebaseConfig'
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { app, db } from './../../../firebaseConfig'
 import { useNavigation } from '@react-navigation/native';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const auth = getAuth(app); 
+
   const navigation = useNavigation();
 
-  const navigateToSignUp = () => {
-    navigation.navigate('SignUp');
-  };
-
-  const navigateToNavigator = () => {
-    navigation.navigate('Navigator');
-  };
-
-  const auth = getAuth(app); 
+  async function handleLogin(user){
+    try {
+      if (user.email === "itemm@itemm.br") {
+        navigation.navigate('NavigatorItemm');
+      } else {
+        navigation.navigate('NavigatorJovem');
+      }
+    } catch (error) {
+      alert("Erro ao fazer login: " + error.message);
+    }
+  }
 
   const authSignIn = () => {
     signInWithEmailAndPassword(auth, email, password)
@@ -26,7 +31,7 @@ const SignIn = () => {
         const user = userCredential.user;
         console.log("Login de usuário:", user);
         Alert.alert("Usuário logado");
-        navigateToNavigator();
+        handleLogin(user);
       })
       .catch(error => {
         console.error("Usuário não registrado:", error);

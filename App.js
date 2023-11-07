@@ -2,6 +2,7 @@ import NavigatorJovem from './src/views/public/NavigatorJovem'
 import NavigatorItemm from './src/views/public/NavigatorItemm'
 import SignIn from './src/views/public/SignIn'
 import GetStarted from './src/views/public/GetStarted'
+import SignUpJovem from './src/views/jovem/SignUpJovem'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -13,6 +14,10 @@ function MyStackNavigator() {
       <Stack.Screen 
         name="GetStarted" 
         component={GetStarted}
+      />
+      <Stack.Screen 
+        name="SignUpJovem" 
+        component={SignUpJovem}
       />
       <Stack.Screen 
         name="NavigatorJovem" 

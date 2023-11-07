@@ -7,7 +7,6 @@ import PresencaItemm from '../itemm/PresencaItemm'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import SignIn from './SignIn'
 
 const Tab = createBottomTabNavigator();
 
@@ -71,8 +70,7 @@ function ItemmTabs() {
 
 const NavigatorItemm = () => {
     return (
-      // <ItemmTabs />
-      < SignIn/>
+      <ItemmTabs />
     )
   }
   

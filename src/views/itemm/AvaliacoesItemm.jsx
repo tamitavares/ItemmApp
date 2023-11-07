@@ -1,30 +1,100 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert, ScrollView} from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView} from 'react-native'
+import React, { useState , useEffect} from 'react'
+import { collection, getDocs, query, addDoc } from "firebase/firestore";
+import { db } from './../../../firebaseConfig'
 
 import { MultipleSelectList } from 'react-native-dropdown-select-list'
 
 const AvaliacoesItemm = () => {
 
-  const [selected, setSelected] = React.useState([]);
+  const [selected, setSelected] = useState([]);
+  const [turmas, setTurmas] = useState([]);
+  const [alunos, setAlunos] = useState([]);
 
-  const turma = [
-    {key:'1', value:'Turma 1'},
-    {key:'2', value:'Turma 2'},
-    {key:'3', value:'Turma 3'},
-  ]
+  //Select
+  const [selectedTurma, setSelectedTurma] = useState([]);
+  const [selectedAluno, setSelectedAluno] = useState([]);
+  const [selectedMetas, setSelectedMetas] = useState([]);
+  const [selectedHabilidade, setSelectedHabilidade] = useState([]);
+  const [selectedRelacionamento, setSelectedRelacionamento] = useState([]);
+  
+  useEffect(() => {
+    async function getTurmas() {
+      try {
+        const q = query(collection(db, 'turmas'));
+        const turmasDocs = await getDocs(q);
+        const turmasData = [];
+        const alunosData = [];
+        turmasDocs.forEach((doc) => {
+          turmasData.push(doc.data().Turma); 
+          const alunos = doc.data().Alunos;
+          alunos.forEach((aluno) => {
+            alunosData.push(aluno); 
+          });
+        });
+        setTurmas(turmasData);
+        setAlunos(alunosData);
+      } catch (error) {
+        alert('Erro ao buscar as turmas: ' + error.message);
+      }
+    }
+    getTurmas();
+  }, []);
 
-  const nome = [
-    {key:'1', value:'João'},
-    {key:'2', value:'Bruna'},
-    {key:'3', value:'Maria'},
-  ]
+  const saveResultsToFirestore = async () => {
+    try {
+      await addDoc(collection(db, 'avaliacoes'), {
+        Turma: selectedTurma,
+        Nome: selectedAluno,
+        Metas: selectedMetas,
+        Habilidade: selectedHabilidade,
+        Relacionamento: selectedRelacionamento,
+      });
+      alert('Resultados salvos com sucesso!');
+    } catch (error) {
+      alert('Erro ao salvar os resultados: ' + error.message);
+    }
+  };
 
-  const dataAvaliacao = [
-    {key:'1', value:'10/08/2023'},
-    {key:'2', value:'10/09/2023'},
-    {key:'3', value:'10/10/2023'},
-    {key:'3', value:'10/11/2023'},
-  ]
+  const handleTurmasSelection = (selectedTurma) => {
+    setSelectedTurma(selectedTurma);
+  };
+
+  const handleAlunosSelection = (selectedAluno) => {
+    setSelectedAluno(selectedAluno);
+  };
+
+  const handleMetasSelection = (selectedValues) => {
+    setSelectedMetas(selectedValues);
+  };
+
+  const handleHabilidadeSelection = (selectedValues) => {
+    setSelectedHabilidade(selectedValues);
+  };
+
+  const handleRelacionamentoSelection = (selectedValues) => {
+    setSelectedRelacionamento(selectedValues);
+  };
+  
+
+  // const turma = [
+  //   {key:'1', value:'Turma 1'},
+  //   {key:'2', value:'Turma 2'},
+  //   {key:'3', value:'Turma 3'},
+  // ]
+
+  // const nome = [
+  //   {key:'1', value:'João'},
+  //   {key:'2', value:'Bruna'},
+  //   {key:'3', value:'Maria'},
+  // ]
+
+  // const dataAvaliacao = [
+  //   {key:'1', value:'10/08/2023'},
+  //   {key:'2', value:'10/09/2023'},
+  //   {key:'3', value:'10/10/2023'},
+  //   {key:'3', value:'10/11/2023'},
+  // ]
 
   const metas = [
     {key:'1', value:'0'},
@@ -45,6 +115,7 @@ const AvaliacoesItemm = () => {
   ]
 
   const enviarNotas = () => {
+    saveResultsToFirestore()
     Alert.alert("Enviado!")
   };
 
@@ -53,68 +124,53 @@ const AvaliacoesItemm = () => {
     <ScrollView style={{flexGrow: 1}}>
     <View style={styles.tela}>
       <Text style={styles.title}>Avaliações</Text>
-        {/* <Image
-          style={styles.image}
-          source={require('../images/logo.png')}
-        /> */}
         <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Turma   </Text>
             <MultipleSelectList 
-            setSelected={(val) => setSelected(val)} 
-            data={turma} 
+            setSelected={handleTurmasSelection} 
+            data={turmas} 
             save="value"
-            onSelect={() => alert(selected)} 
-            // label="Turma"
           />
         </View>
         <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Nome   </Text>
             <MultipleSelectList 
-            setSelected={(val) => setSelected(val)} 
-            data={nome} 
+            setSelected={handleAlunosSelection} 
+            data={alunos} 
             save="value"
-            onSelect={() => alert(selected)} 
-            // label="Nome"
           />
         </View>
-        <View style={{...styles.selecoesNotas, top: 120}}>
+        {/* <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Data da Avaliação   </Text>
             <MultipleSelectList 
             setSelected={(val) => setSelected(val)} 
             data={dataAvaliacao} 
             save="value"
-            onSelect={() => alert(selected)} 
             // label="Data da Avaliação"
           />
-        </View>
+        </View> */}
         <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Cumprimento de Metas   </Text>
             <MultipleSelectList 
-            setSelected={(val) => setSelected(val)} 
+            setSelected={handleMetasSelection} 
             data={metas} 
             save="value"
-            onSelect={() => alert(selected)} 
-            // label="Cumprimento de Metas"
           />
         </View>
         <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Habilidade Técnica   </Text>
             <MultipleSelectList 
-            setSelected={(val) => setSelected(val)} 
+            setSelected={handleHabilidadeSelection} 
             data={habilidade} 
             save="value"
-            onSelect={() => alert(selected)} 
-            // label="Habilidade Técnica"
           />
         </View>
         <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Relacionamento Interpessoal   </Text>
             <MultipleSelectList 
-            setSelected={(val) => setSelected(val)} 
+            setSelected={handleRelacionamentoSelection} 
             data={relacionamento} 
             save="value"
-            onSelect={() => alert(selected)} 
-            // label="Relacionamento Interpessoal"
           />
         </View>
         <View>

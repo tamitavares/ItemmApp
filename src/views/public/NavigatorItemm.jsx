@@ -21,7 +21,8 @@ function ItemmTabs() {
           tabBarLabel: "Mensagens",
           tabBarIcon: () => (
             <Icon name="envelope" size={30} color="#263868" />
-          )
+          ),
+          headerShown: false 
         }} 
       />
       <Tab.Screen 
@@ -31,7 +32,8 @@ function ItemmTabs() {
           tabBarLabel: "Certificado",
           tabBarIcon: () => (
             <Icon name="certificate" size={30} color="#263868" />
-          )
+          ),
+          headerShown: false 
         }} 
       />
       <Tab.Screen 
@@ -41,7 +43,8 @@ function ItemmTabs() {
           tabBarLabel: "Presença",
           tabBarIcon: () => (
             <Icon name="spinner" size={30} color="#263868" />
-          )
+          ),
+          headerShown: false 
         }} 
       />
       <Tab.Screen 
@@ -51,7 +54,8 @@ function ItemmTabs() {
           tabBarLabel: "Avaliações",
           tabBarIcon: () => (
             <Icon name="star" size={30} color="#263868" />
-          )
+          ),
+          headerShown: false 
         }} 
       />
       <Tab.Screen 
@@ -61,7 +65,8 @@ function ItemmTabs() {
           tabBarLabel: "Análises",
           tabBarIcon: () => (
             <Icon name="line-chart" size={30} color="#263868" />
-          )
+          ),
+          headerShown: false 
         }} 
       />
     </Tab.Navigator>

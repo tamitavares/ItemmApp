@@ -7,7 +7,7 @@ import { MultipleSelectList } from 'react-native-dropdown-select-list'
 
 const AvaliacoesItemm = () => {
 
-  const [selected, setSelected] = useState([]);
+  // const [selected, setSelected] = useState([]);
   const [turmas, setTurmas] = useState([]);
   const [alunos, setAlunos] = useState([]);
 

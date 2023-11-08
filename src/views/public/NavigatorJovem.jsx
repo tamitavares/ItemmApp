@@ -17,7 +17,8 @@ function JovemTabs() {
           tabBarLabel: "Certificado",
           tabBarIcon: () => (
             <Icon name="certificate" size={30} color="#263868" />
-          )
+          ),
+          headerShown: false 
         }} 
       />
       <Tab.Screen 
@@ -27,7 +28,8 @@ function JovemTabs() {
           tabBarLabel: "Progresso",
           tabBarIcon: () => (
             <Icon name="spinner" size={30} color="#263868" />
-          )
+          ),
+          headerShown: false 
         }} 
       />
     </Tab.Navigator>

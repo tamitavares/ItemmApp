@@ -12,7 +12,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-native-fontawesome": "^0.3.0",
-    "@react-native-async-storage/async-storage": "1.18.2",
+    "@react-native-async-storage/async-storage": "^1.18.2",
     "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/stack": "^6.3.17",
     "expo": "~49.0.11",
@@ -21,6 +21,7 @@
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-dropdown-select-list": "^2.0.5",
+    "react-native-picker-select": "^9.0.0",
     "react-native-table-component": "^1.2.2"
   },
   "devDependencies": {

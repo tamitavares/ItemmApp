@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView} from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Image, ScrollView} from 'react-native'
 import React, { useState , useEffect} from 'react'
 import { collection, getDocs, query, addDoc } from "firebase/firestore";
 import { db } from './../../../firebaseConfig'
@@ -75,26 +75,6 @@ const AvaliacoesItemm = () => {
   const handleRelacionamentoSelection = (selectedValues) => {
     setSelectedRelacionamento(selectedValues);
   };
-  
-
-  // const turma = [
-  //   {key:'1', value:'Turma 1'},
-  //   {key:'2', value:'Turma 2'},
-  //   {key:'3', value:'Turma 3'},
-  // ]
-
-  // const nome = [
-  //   {key:'1', value:'João'},
-  //   {key:'2', value:'Bruna'},
-  //   {key:'3', value:'Maria'},
-  // ]
-
-  // const dataAvaliacao = [
-  //   {key:'1', value:'10/08/2023'},
-  //   {key:'2', value:'10/09/2023'},
-  //   {key:'3', value:'10/10/2023'},
-  //   {key:'3', value:'10/11/2023'},
-  // ]
 
   const metas = [
     {key:'1', value:'0'},
@@ -123,6 +103,10 @@ const AvaliacoesItemm = () => {
   return (
     <ScrollView style={{flexGrow: 1}}>
     <View style={styles.tela}>
+      <Image
+          style={styles.image}
+          source={require('../images/logo.png')}
+        />
       <Text style={styles.title}>Avaliações</Text>
         <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Turma   </Text>
@@ -197,19 +181,17 @@ const styles = StyleSheet.create({
   },
   image: {
     height: 107,
-    position: 'absolute',
     top: 32,
     width: 179,
   },
   title: {
     color: '#000000',
-    //fontFamily: 'Roboto-Bold',
     fontSize: 23,
     fontWeight: '700',
     left: 21,
     position: 'absolute',
     textAlign: 'left',
-    top: 32,
+    top: 150,
   },
   selecao: {
     color: '#000000',

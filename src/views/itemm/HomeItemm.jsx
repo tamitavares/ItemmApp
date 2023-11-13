@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, Image, TextInput, Button, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { collection, addDoc, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
 import { db } from './../../../firebaseConfig';
-import { MultipleSelectList } from 'react-native-dropdown-select-list'
+import { SelectList } from 'react-native-dropdown-select-list'
 
 const CadastroScreen = () => {
   const [nomeEmpresa, setNomeEmpresa] = useState('');
@@ -82,13 +82,22 @@ const CadastroScreen = () => {
     }
   };
 
+  const aluno = [selectedAluno, selectedAluno.uid]
+
   const atualizarCadastro = async () => {
     try {
       if (!selectedAluno) {
         Alert.alert('Selecione um usuário para atualizar o cadastro.');
         return;
       }  
-      await updateDoc(doc(db, 'users', selectedUsuario), { turma: selectedTurma });
+      
+      /* console.log(selectedAluno)
+      console.log(selectedTurma) */
+
+      //Alert.alert(selectedAluno)
+      //Alert.alert(selectedTurma)
+      console.log(selectedAluno.uid);
+      await updateDoc(doc(db, 'users', selectedAluno), { "turma": selectedTurma });
   
       Alert.alert('Cadastro do aluno atualizado com sucesso!');
       // Limpar campos ou realizar outras ações necessárias após a atualização.
@@ -154,20 +163,20 @@ const CadastroScreen = () => {
         <Text style={{...styles.title}}>Adicionar turma à usuário</Text>
         <View style={{...styles.selecoesNotas}}>
             <Text style={styles.selecao}>Nome   </Text>
-            <MultipleSelectList 
+            <SelectList 
             setSelected={handleAlunosSelection} 
             data={alunos} 
             save="value"
-          />
+            />
         </View>
 
         <View style={{...styles.selecoesNotas}}>
             <Text style={styles.selecao}>Turma   </Text>
-            <MultipleSelectList 
+            <SelectList 
             setSelected={handleTurmasSelection} 
             data={turmas} 
             save="value"
-          />
+            />
         </View>
 
         <View>

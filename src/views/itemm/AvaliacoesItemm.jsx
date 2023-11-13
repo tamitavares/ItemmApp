@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Image, ScrollView} from 'react-native'
 import React, { useState , useEffect} from 'react'
-import { collection, getDocs, query, addDoc } from "firebase/firestore";
+import { collection, getDocs, query, doc, updateDoc } from "firebase/firestore";
 import { db } from './../../../firebaseConfig'
 
 import { MultipleSelectList } from 'react-native-dropdown-select-list'
@@ -19,33 +19,40 @@ const AvaliacoesItemm = () => {
   const [selectedRelacionamento, setSelectedRelacionamento] = useState([]);
   
   useEffect(() => {
-    async function getTurmas() {
+    async function getTurmas(){
       try {
         const q = query(collection(db, 'turmas'));
         const turmasDocs = await getDocs(q);
-        const turmasData = [];
-        const alunosData = [];
+        const turmaData = [];
         turmasDocs.forEach((doc) => {
-          turmasData.push(doc.data().Turma); 
-          const alunos = doc.data().Alunos;
-          alunos.forEach((aluno) => {
-            alunosData.push(aluno); 
-          });
+            turmaData.push(doc.data()); 
         });
-        setTurmas(turmasData);
+        setTurmas(turmaData);
+      } catch (error) {
+        alert('Erro ao buscar as turmas: ' + error.message);
+      }
+    }
+    async function getAlunos(){
+      try {
+        const q = query(collection(db, 'users'));
+        const usersDocs = await getDocs(q);
+        const alunosData = [];
+        usersDocs.forEach((doc) => {
+            alunosData.push(doc.data()); 
+        });
         setAlunos(alunosData);
       } catch (error) {
         alert('Erro ao buscar as turmas: ' + error.message);
       }
     }
     getTurmas();
+    getAlunos();
   }, []);
 
   const saveResultsToFirestore = async () => {
     try {
-      await addDoc(collection(db, 'avaliacoes'), {
-        Turma: selectedTurma,
-        Nome: selectedAluno,
+      const docRef = doc(db, 'users', selectedAluno[0]?.uid);
+      await updateDoc(docRef, {
         Metas: selectedMetas,
         Habilidade: selectedHabilidade,
         Relacionamento: selectedRelacionamento,
@@ -55,6 +62,7 @@ const AvaliacoesItemm = () => {
       alert('Erro ao salvar os resultados: ' + error.message);
     }
   };
+  
 
   const handleTurmasSelection = (selectedTurma) => {
     setSelectedTurma(selectedTurma);
@@ -62,7 +70,14 @@ const AvaliacoesItemm = () => {
 
   const handleAlunosSelection = (selectedAluno) => {
     setSelectedAluno(selectedAluno);
+  
+    // Se o objeto selectedAluno contiver uma propriedade uid, você pode acessá-la
+    const alunoUid = selectedAluno[0]?.uid;
+  
+    // Agora você pode usar alunoUid onde necessário
+    console.log('UID do aluno selecionado:', alunoUid);
   };
+  
 
   const handleMetasSelection = (selectedValues) => {
     setSelectedMetas(selectedValues);
@@ -120,7 +135,7 @@ const AvaliacoesItemm = () => {
             <Text style={styles.selecao}>Nome   </Text>
             <MultipleSelectList 
             setSelected={handleAlunosSelection} 
-            data={alunos} 
+            data={alunos}  
             save="value"
           />
         </View>

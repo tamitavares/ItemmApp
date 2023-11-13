@@ -91,13 +91,18 @@ const CadastroScreen = () => {
         return;
       }  
       
-      /* console.log(selectedAluno)
-      console.log(selectedTurma) */
+      //const usuariosSnapshot = await getDocs(collection(db, 'users'));
+      const q = query(collection(db, 'users'), where("displayName", "==", selectedAluno));
+      const querySnapshot = await getDocs(q);
 
-      //Alert.alert(selectedAluno)
-      //Alert.alert(selectedTurma)
-      console.log(selectedAluno.uid);
-      await updateDoc(doc(db, 'users', selectedAluno), { "turma": selectedTurma });
+      querySnapshot.forEach((documento) => {
+        // console.log(documento.id, " => ", documento.data());
+      
+        // Corrigindo o acesso ao ID do documento
+        const docRef = doc(db, 'users', documento.id);
+        updateDoc(docRef, { "turma": selectedTurma });
+      });
+
   
       Alert.alert('Cadastro do aluno atualizado com sucesso!');
       // Limpar campos ou realizar outras ações necessárias após a atualização.

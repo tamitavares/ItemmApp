@@ -11,6 +11,7 @@ const PresencaItemm = () => {
 
 const [turmas, setTurmas] = useState([]);
 const [alunos, setAlunos] = useState([]);
+const [dataAtual, setDataAtual] = useState('');
 
 //Select
 const [selectedTurma, setSelectedTurma] = useState([]);
@@ -26,7 +27,6 @@ useEffect(() => {
         turmaData.push(doc.data().nome);
       });
       setTurmas(turmaData);
-      getAlunos();
     } catch (error) {
       alert('Erro ao buscar as turmas: ' + error.message);
     }
@@ -39,17 +39,29 @@ useEffect(() => {
       const usersDocs = await getDocs(q);
       const alunosData = [];
       usersDocs.forEach((doc) => {
-        console.log(alunosData.push(doc.data().displayName));
+        alunosData.push(doc.data().displayName);
       });
-      console.log(alunosData)
+      // console.log(alunosData)
   
       setAlunos(alunosData);
     } catch (error) {
       alert('Erro ao buscar os alunos: ' + error.message);
     }
   }
-  
+
+  const obterDataAtual = () => {
+    const data = new Date();
+    const dia = data.getDate();
+    const mes = data.getMonth() + 1; // Mês começa do zero
+    const ano = data.getFullYear();
+
+    const dataFormatada = `${dia}/${mes}/${ano}`;
+    return dataFormatada;
+  };
+
+  setDataAtual(obterDataAtual());
   getTurmas();
+  getAlunos();
 }, []);
 
 const faltas = [
@@ -87,18 +99,26 @@ const saveResultsToFirestore = async (alunos, selectedTurma) => {
       const q = query(collection(db, 'users'), where("displayName", "==", nomeDoAluno));
       const querySnapshot = await getDocs(q);
   
-      querySnapshot.forEach((documento) => {
-        // console.log(documento.id, " => ", documento.data());
-  
-        // Corrigindo o acesso ao ID do documento
+      let resultadosAtualizados = {}
+
+      querySnapshot.forEach(async (documento) => {
         const docRef = doc(db, 'users', documento.id);
-  
+
         const faltaAluno = item.falta;
         console.log(faltaAluno);
-  
-        updateDoc(docRef, { "falta": faltaAluno });
-        alert('Resultados salvos com sucesso!');
+
+        const dataAtual = new Date();
+
+        const faltasData = {
+          "falta": faltaAluno,
+          "data": dataAtual,
+        };
+        addDoc(collection(docRef, 'faltas'), faltasData);
+        // resultadosAtualizados[documento.id] = faltasData;
+        // await updateDoc(docRef, faltasData);
       });
+      console.log(resultadosAtualizados);
+      alert('Resultados salvos com sucesso!');
     });
   } catch (error) {
     console.error("Erro:", error.message);

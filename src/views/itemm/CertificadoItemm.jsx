@@ -18,9 +18,9 @@ const CertificadoItemm = () => {
         type: 'application/pdf', // Você pode definir os tipos de arquivo permitidos
       });
       
-      if (result.type === 'application/pdf') {
+      if (result.assets[0].mimeType === 'application/pdf') {
         setPickedDocument(result);
-        console.log(result)
+        console.log('foi!!!!!!!!!!!!!!!!!!!!!!!!!!!')
       } else {
         setPickedDocument(null);
       }
@@ -44,22 +44,44 @@ const CertificadoItemm = () => {
       }
     }
     if (pickedDocument) {
-      console.log('Informações do documento escolhido:', pickedDocument);
+      /*console.log('Documentos escolhidos:', pickedDocument);*/
 
-      // Exemplo de como acessar as propriedades corretas
-      const { name, type, size } = pickedDocument;
-
-      // Exibir as informações na tela
-      console.log('Nome do arquivo:', name);
-      console.log('Tipo do arquivo:', type);
-      console.log('Tamanho do arquivo:', size);
-
-      // Você pode usar essas informações em seu componente JSX conforme necessário
+      // Acesse o array 'assets' para obter detalhes sobre os arquivos
+      const type = pickedDocument.assets[0].mimeType;
+      const name = pickedDocument.assets[0].name;
+      if (type) {
+        console.log(type)
+        console.log(name)
+        return;
+      }
     }
 
     getAlunos();
 
-  }, [pickDocument])
+  }, [])
+
+  const atualizarCadastro = async () => {
+    try {
+      if (!selectedAluno) {
+        Alert.alert('Selecione um usuário para atualizar o cadastro.');
+        return;
+      }  
+      
+      /* console.log(selectedAluno)
+      console.log(selectedTurma) */
+
+      //Alert.alert(selectedAluno)
+      //Alert.alert(selectedTurma)
+      console.log(selectedAluno.uid);
+      await updateDoc(doc(db, 'users', selectedAluno), { "turma": selectedTurma });
+  
+      Alert.alert('Cadastro do aluno atualizado com sucesso!');
+      // Limpar campos ou realizar outras ações necessárias após a atualização.
+  
+    } catch (error) {
+      Alert.alert('Erro ao atualizar cadastro do aluno:', error.message);
+    }
+  };
 
 
   const handleAlunosSelection = (selectedAluno) => {
@@ -70,12 +92,6 @@ const CertificadoItemm = () => {
     Alert.alert('Certificado enviado.');
     return;
   }
-  const getArquivo = () =>{
-    Alert.alert('Certificado enviado.');
-    return;
-  }
-
-
 
   return (
     <View style={styles.tela}>
@@ -90,7 +106,15 @@ const CertificadoItemm = () => {
       />
 
     
-    <Button title="Select 📑" onPress={pickDocument} />
+    <Button title="Selecione o Documento" onPress={pickDocument} />
+
+    {pickedDocument && (
+        <View style={{ marginTop: 20 }}>
+          <Text>Nome do arquivo: {pickedDocument.assets[0].name}</Text>
+          <Text>Tipo do arquivo: {pickedDocument.assets[0].mimeType}</Text>
+          <Text>Tamanho do arquivo: {pickedDocument.assets[0].size} bytes</Text>
+        </View>
+      )}
     
     <Button title = "Enviar certificado" onPress={enviaCertificado}/>
 

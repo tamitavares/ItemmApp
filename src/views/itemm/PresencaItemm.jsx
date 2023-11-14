@@ -4,7 +4,7 @@ import { collection, getDocs, query, addDoc, doc, updateDoc, arrayUnion, where }
 import { db } from './../../../firebaseConfig'
 
 import { SelectList } from 'react-native-dropdown-select-list'
-import { MultipleSelectList } from 'react-native-dropdown-select-list'
+// import { MultipleSelectList } from 'react-native-dropdown-select-list'
 
 
 const PresencaItemm = () => {
@@ -49,7 +49,6 @@ useEffect(() => {
     }
   }
   
-  // Chama getTurmas para iniciar a cadeia de chamadas
   getTurmas();
 }, []);
 

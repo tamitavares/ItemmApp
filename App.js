@@ -1,8 +1,8 @@
 import NavigatorJovem from './src/views/public/NavigatorJovem'
 import NavigatorItemm from './src/views/public/NavigatorItemm'
+import SignIn from './src/views/public/SignIn'
 import GetStarted from './src/views/public/GetStarted'
-
-import { auth } from './firebaseConfig';
+import SignUpJovem from './src/views/jovem/SignUpJovem'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -16,6 +16,10 @@ function MyStackNavigator() {
         component={GetStarted}
       />
       <Stack.Screen 
+        name="SignUpJovem" 
+        component={SignUpJovem}
+      />
+      <Stack.Screen 
         name="NavigatorJovem" 
         component={NavigatorJovem}
         options={{headerShown: false}}
@@ -23,6 +27,11 @@ function MyStackNavigator() {
       <Stack.Screen 
         name="NavigatorItemm" 
         component={NavigatorItemm}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen 
+        name="SignIn" 
+        component={SignIn}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

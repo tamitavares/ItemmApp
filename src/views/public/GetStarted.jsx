@@ -4,14 +4,14 @@ import { useNavigation } from '@react-navigation/native';
 
 const CertificadoItemm = () => {
 
-    const navigation = useNavigation();
+const navigation = useNavigation();
 
-    const navigateToJovem = () => {
-        navigation.navigate('NavigatorJovem'); 
-    };
-    const navigateToItemm = () => {
-        navigation.navigate('NavigatorItemm'); 
-    };
+const navigateSignUpJovem = () => {
+    navigation.navigate('SignUpJovem'); 
+};
+const navigateSignIn = () => {
+    navigation.navigate('SignIn'); 
+};
 
   return (
     <View style={styles.tela}>
@@ -22,13 +22,13 @@ const CertificadoItemm = () => {
         <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
             style={styles.button}
-            onPress={navigateToJovem}
+            onPress={navigateSignUpJovem}
             >
             <Text style={styles.text}>Jovem Aprendiz</Text>
             </TouchableOpacity>
             <TouchableOpacity
             style={styles.button}
-            onPress={navigateToItemm}
+            onPress={navigateSignIn}
             >
             <Text style={styles.text}>Itemm</Text>
             </TouchableOpacity>

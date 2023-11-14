@@ -2,21 +2,32 @@ import { View, Text, StyleSheet, Image, Button, Alert, Platform} from 'react-nat
 import { collection, addDoc, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
 import { db } from './../../../firebaseConfig';
 import React, { useEffect,useState } from 'react'
-import DocumentPicker, {
-  DirectoryPickerResponse,
-  DocumentPickerResponse,
-  isCancel,
-  isInProgress,
-  types,
-} from 'react-native-document-picker'
+import * as DocumentPicker from 'expo-document-picker';
 import { SelectList } from 'react-native-dropdown-select-list'
 
 const CertificadoItemm = () => {
 
   const [selectedAluno, setSelectedAluno] = useState([]);
   const [alunos, setAlunos] = useState([]);
-  const [fileResponse, setFileResponse] = useState([]);
-  
+  const [pickedDocument, setPickedDocument] = useState(null);
+
+
+  const pickDocument = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/pdf', // Você pode definir os tipos de arquivo permitidos
+      });
+      
+      if (result.type === 'application/pdf') {
+        setPickedDocument(result);
+        console.log(result)
+      } else {
+        setPickedDocument(null);
+      }
+    } catch (err) {
+      console.error('Erro ao escolher o documento:', err);
+    }
+  };
 
   useEffect(()=>{
     async function getAlunos(){
@@ -32,45 +43,23 @@ const CertificadoItemm = () => {
         alert('Erro ao buscar as turmas: ' + error.message);
       }
     }
+    if (pickedDocument) {
+      console.log('Informações do documento escolhido:', pickedDocument);
 
-    async function pickDocument() {
-      try {
-        const result = await DocumentPicker.pick({
-          type: [DocumentPicker.types.pdf],
-        });
-    
-        // O arquivo selecionado está disponível em 'result.uri'
-        console.log(result.uri);
-    
-        // Se você estiver usando Android, pode precisar ajustar o caminho do arquivo para o formato de URI do Android
-        const androidURI = Platform.OS === 'android' ? `file://${result.uri}` : result.uri;
-        console.log('Caminho do arquivo no Android:', androidURI);
-      } catch (err) {
-        if (DocumentPicker.isCancel(err)) {
-          // Usuário cancelou a seleção
-          console.log('Seleção cancelada');
-        } else {
-          throw err;
-        }
-      }
+      // Exemplo de como acessar as propriedades corretas
+      const { name, type, size } = pickedDocument;
+
+      // Exibir as informações na tela
+      console.log('Nome do arquivo:', name);
+      console.log('Tipo do arquivo:', type);
+      console.log('Tamanho do arquivo:', size);
+
+      // Você pode usar essas informações em seu componente JSX conforme necessário
     }
-
 
     getAlunos();
 
-  }, [])
-
-
-  const handleDocumentSelection = useCallback(async () => {
-    try {
-      const response = await DocumentPicker.pick({
-        presentationStyle: 'fullScreen',
-      });
-      setFileResponse(response);
-    } catch (err) {
-      console.warn(err);
-    }
-  }, []);
+  }, [pickDocument])
 
 
   const handleAlunosSelection = (selectedAluno) => {
@@ -100,17 +89,8 @@ const CertificadoItemm = () => {
       save="value"
       />
 
-    <StatusBar barStyle={'dark-content'} />
-      {fileResponse.map((file, index) => (
-        <Text
-          key={index.toString()}
-          style={styles.uri}
-          numberOfLines={1}
-          ellipsizeMode={'middle'}>
-          {file?.uri}
-        </Text>
-      ))}
-      <Button title="Select 📑" onPress={handleDocumentSelection} />
+    
+    <Button title="Select 📑" onPress={pickDocument} />
     
     <Button title = "Enviar certificado" onPress={enviaCertificado}/>
 

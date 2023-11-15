@@ -27,20 +27,28 @@ const CertificadoItemm = () => {
         
         const p = query(collection(db, 'users'), where("displayName", "==", selectedAluno));
         const querySnapshot = await getDocs(p);
-        
-        console.log('verificado 1')
-        const fileData = { nome: pickedDocument.assets[0].nam, uri: pickedDocument.assets[0].uri };
-        /*
-        await addDoc(collection(db, 'users',documento.id,'certificado'), fileData);*/
-        querySnapshot.docs((documento) => {
-          console.log('verificado 2')
-          const docRef = doc(db, 'users', documento.id,'certificado');
-          addDoc(docRef, fileData);
+      
+       
+        if (!querySnapshot.empty) {
+          // Obtendo a referência do documento do aluno
+          const alunoDocRef = querySnapshot.docs[0].ref;
+      
+          // Adicionando um documento à subcoleção "certificados"
+          const novoCertificado = {
+            nome: pickedDocument.assets[0].name, // Substitua pelo nome desejado
+            uri: pickedDocument.assets[0].uri,   // Substitua pela URI desejada
+          };
+      
+          await addDoc(collection(alunoDocRef, 'certificados'), novoCertificado);
+      
+          console.log('Documento adicionado à subcoleção "certificados" com sucesso.');
+        } else {
+          console.log('Aluno não encontrado.');
+        }
+       
+        console.log('verificado 3')
 
-          console.log('verificado 3')
-        });
-
-        /*  setPickedDocument('');  */      
+        setPickedDocument('');  
 
         Alert.alert('Upload concluído com sucesso!');
       } catch (error) {
@@ -128,20 +136,20 @@ const CertificadoItemm = () => {
       save="value"
       />
 
-    
-    <Button title="Selecione o Documento" onPress={pickDocument} />
-
-    {pickedDocument && (
-        <View style={{ marginTop: 20 }}>
-          <Text>Nome do arquivo: {pickedDocument.assets[0].name}</Text>
-          <Text>Tipo do arquivo: {pickedDocument.assets[0].mimeType}</Text>
-          <Text>Tamanho do arquivo: {pickedDocument.assets[0].size} bytes</Text>
-          <Text>Uri: {pickedDocument.assets[0].uri} </Text>
-        </View>
-      )}
-    
-    <Button title = "Enviar certificado" onPress={uploadToFirebase}/>
-
+      <View style={{ marginTop: 20 }}>
+        <Button title="Selecione o Documento" onPress={pickDocument} />
+      </View>
+          {pickedDocument && (
+              <View style={{ marginTop: 20 }}>
+                <Text>Nome do arquivo: {pickedDocument.assets[0].name}</Text>
+                <Text>Tipo do arquivo: {pickedDocument.assets[0].mimeType}</Text>
+                <Text>Tamanho do arquivo: {pickedDocument.assets[0].size} bytes</Text>
+                <Text>Uri: {pickedDocument.assets[0].uri} </Text>
+              </View>
+            )}
+      <View style={{ marginTop: 20 }}>
+        <Button title = "Enviar certificado" onPress={uploadToFirebase}/>
+      </View>
 
     </View>
   )
@@ -163,13 +171,3 @@ const styles = StyleSheet.create({
     width: 179,
   },
 })
-
-
-
-
-
-/*querySnapshot.forEach((documento) => {
-          const docRef = doc(db, 'users', documento.id,'certificado', 'vUSolFeRmuzsFykthdUo');
-          updateDoc(docRef, { "uri": pickedDocument.assets[0].uri });
-          updateDoc(docRef, { "nome": pickedDocument.assets[0].name });
-        }); */

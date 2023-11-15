@@ -10,7 +10,6 @@ const CertificadoItemm = () => {
   const [selectedAluno, setSelectedAluno] = useState([]);
   const [alunos, setAlunos] = useState([]);
   const [pickedDocument, setPickedDocument] = useState(null);
-  const [usuarios, setUsuarios] = useState([]);
 
   const uploadToFirebase = async () => {
     if (pickedDocument) {

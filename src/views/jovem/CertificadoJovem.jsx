@@ -2,6 +2,9 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, Image, StyleSheet, Button, Alert, Linking } from 'react-native';
 import { getStorage, ref, getDownloadURL, listAll } from "firebase/storage";
 import RNPickerSelect from 'react-native-picker-select';
+import { LogBox } from "react-native";
+
+LogBox.ignoreLogs(['Invalid prop `textStyle` of type `array` supplied to `Cell']);
 
 export default CertificadoJovem = () => {
 

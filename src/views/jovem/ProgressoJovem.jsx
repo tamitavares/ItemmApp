@@ -4,14 +4,17 @@ import {Table, Row} from 'react-native-table-component';
 import { app, db } from './../../../firebaseConfig'
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { LogBox } from "react-native";
+
+LogBox.ignoreLogs(['Invalid prop `textStyle` of type `array` supplied to `Cell']);
 
 export default ProgressoJovem = () => {
 
   const [avaliacoes, setAvaliacoes] = useState([]);
-  // const [presencas, setPresencas] = useState([]);
+  const [presencas, setPresencas] = useState([]);
+  const [id, setId] = useState();
 
   const auth = getAuth(app); 
-
 
   useEffect(() => {
     // Função para buscar avaliações no Firestore
@@ -27,6 +30,7 @@ export default ProgressoJovem = () => {
           "Metas", "Habilidade Interpessoal", "Relacionamento"
         ])
         avaliacoesDocs.forEach((doc) => {
+          setId(doc.id);
           const metas = doc.data().metas;
           const habilidade = doc.data().habilidade;
           const relacionamento = doc.data().relacionamento;
@@ -41,41 +45,43 @@ export default ProgressoJovem = () => {
       }
     };
 
-    // Função para buscar presenças no Firestore
-  //  const getPresencas = async () => {
-  //   console.log(getPresencas)
-  //   try {
-  //     const q = query(
-  //       collection(db, 'users'),
-  //       where('email', '==', auth.currentUser.email)
-  //     );
-  //     const presencasDocs = await getDocs(q);
-  //     const presencasData = [];
-  //     presencasData.push([
-  //       "Data", "Presença"
-  //     ])
-  //     presencasDocs.forEach((doc) => {
-  //       console.log("forEach")
-  //       const data = doc.data().data;
-  //       const falta = doc.data().falta;
-
-  //       presencasData.push({
-  //         data, falta
-  //       });
-  //     });
-  //     setPresencas(presencasData);
-  //     console.log(presencasData)
-  //   } catch (error) {
-  //     alert('Erro ao buscar as presenças: ' + error.message);
-  //   }
-  // };
-
     getAvaliacoes();
-    // getPresencas();
-    // console.log(presencas);
-    // console.log(auth.currentUser.email);
   }, []);
 
+  useEffect(() => {
+    // Função para buscar presenças no Firestore
+   const getPresencas = async () => {
+    try {
+      const q = collection(db, `users/${id}/faltas`)
+      
+      const presencasDocs = await getDocs(q);
+      const presencasData = [];
+      presencasData.push([
+        "Data", "Presença"
+      ])
+
+      presencasDocs.forEach((doc) => {
+
+        const dataEmMilissegundos = doc.data().data.seconds * 1000;
+        const data = new Date(dataEmMilissegundos);
+
+        const dataFormatada = data.toLocaleDateString('pt-BR');
+
+        const falta = doc.data().falta;
+
+        presencasData.push([
+          dataFormatada, falta
+        ]);
+      });
+      setPresencas(presencasData);
+    } catch (error) {
+      alert('Erro ao buscar as presenças: ' + error.message);
+    }
+  };
+
+    if(id != undefined)
+      getPresencas();
+  }, [id]);
 
   return (
     <ScrollView>
@@ -103,7 +109,7 @@ export default ProgressoJovem = () => {
           ))}
         </Table>
 
-        {/* <Table borderStyle={{ borderColor: 'Black' }}>
+        <Table borderStyle={{ borderColor: 'Black' }}>
           {presencas.map((rowData, index) => (
             <Row
               key={index}
@@ -121,10 +127,10 @@ export default ProgressoJovem = () => {
               }}
             />
           ))}
-        </Table> */}
+        </Table>
 
         <Text style={{...styles.textWrapper,top: 274}}>Avaliações:</Text>
-        <Text style={{...styles.textWrapper,top: 472}}>Presença:</Text>
+        <Text style={{...styles.textWrapper,top: 415}}>Presença:</Text>
         <Text style={styles.textWrapper2}>Sair</Text>
         <Text style={styles.p}>Aqui está o seu progresso:</Text>
        
@@ -133,26 +139,6 @@ export default ProgressoJovem = () => {
     </ScrollView>
   );
 };
-
-// const dados = {
-//   avaliacao: [
-//     ['Dia', 'Nome da prova', 'Nota'],
-//     ['01/02/2023', 'Prova 1', '2'],
-//     ['02/02/2023', 'Prova 2', '2'],
-//     ['03/02/2023', 'Prova 3', '1'],
-//     ['04/02/2023', 'Prova 4', '0'],
-//   ],
-//   presenca: [
-//     ['Dia', 'Presença'],
-//     ['01/02/2023', 'Presente'],
-//     ['02/02/2023', 'Presente'],
-//     ['03/02/2023', 'Ausente'],
-//     ['04/02/2023', 'Presente'],
-//   ],
-//};
-
-// const tabelaAvaliacao = dados.avaliacao;
-// const tabelaPresenca = dados.presenca;
 
 
 const styles = StyleSheet.create({

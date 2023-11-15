@@ -23,14 +23,11 @@
     "minimatch": "^9.0.3",
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",
-    "react-native": "0.72.6",
+    "react-native": "^0.72.6",
     "react-native-chart-kit": "^6.12.0",
     "react-native-dropdown-select-list": "^2.0.5",
-    "react-native-picker-select": "^9.0.0",
-    "react-native-signature-canvas": "^4.7.1",
     "react-native-table-component": "^1.2.2",
-    "react-svg-radar-chart": "^1.4.0",
-    "recharts": "^2.9.3"
+    "expo-document-picker": "~11.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

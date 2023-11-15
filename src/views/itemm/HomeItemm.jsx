@@ -8,7 +8,6 @@ const CadastroScreen = () => {
   const [nomeEmpresa, setNomeEmpresa] = useState('');
   const [emailEmpresa, setEmailEmpresa] = useState('');
   const [nomeTurma, setNomeTurma] = useState('');
-  const [selectedUsuario, setSelectedUsuario] = useState(null);
   const [usuarios, setUsuarios] = useState([]);
 
 
@@ -16,6 +15,8 @@ const CadastroScreen = () => {
   const [alunos, setAlunos] = useState([]);
   const [selectedTurma, setSelectedTurma] = useState([]);
   const [turmas, setTurmas] = useState([]);
+  const [selectedEmpresa, setSelectedEmpresa] = useState([]);
+  const [empresas, setEmpresas] = useState([]);
 
   useEffect(() => {
     async function listarUsuarios() {
@@ -53,10 +54,25 @@ const CadastroScreen = () => {
         alert('Erro ao buscar as turmas: ' + error.message);
       }
     }
+    async function getEmpresas(){
+      try {
+        const q = query(collection(db, 'empresas'));
+        const empresasDocs = await getDocs(q);
+        const empresaData = [];
+        empresasDocs.forEach((doc) => {
+            empresaData.push(doc.data().nome); 
+        });
+        //console.log(empresaData)
+        setEmpresas(empresaData);
+      } catch (error) {
+        alert('Erro ao buscar as empresas: ' + error.message);
+      }
+    }
 
     listarUsuarios();
     getAlunos();
     getTurmas();
+    getEmpresas();
   }, []);
 
   const criarEmpresa = async () => {
@@ -90,17 +106,20 @@ const CadastroScreen = () => {
         Alert.alert('Selecione um usuário para atualizar o cadastro.');
         return;
       }  
-      
-      /* console.log(selectedAluno)
-      console.log(selectedTurma) */
 
-      //Alert.alert(selectedAluno)
-      //Alert.alert(selectedTurma)
-      console.log(selectedAluno.uid);
-      await updateDoc(doc(db, 'users', selectedAluno), { "turma": selectedTurma });
+      const q = query(collection(db, 'users'), where("displayName", "==", selectedAluno));
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((documento) => {
+
+        const docRef = doc(db, 'users', documento.id);
+        updateDoc(docRef, { "turma": selectedTurma });
+        updateDoc(docRef, { "empresa": selectedEmpresa });
+      });
+
   
       Alert.alert('Cadastro do aluno atualizado com sucesso!');
-      // Limpar campos ou realizar outras ações necessárias após a atualização.
+      
   
     } catch (error) {
       Alert.alert('Erro ao atualizar cadastro do aluno:', error.message);
@@ -112,6 +131,10 @@ const CadastroScreen = () => {
   };
   const handleTurmasSelection = (selectedTurma) => {
     setSelectedTurma(selectedTurma);
+  };
+  const handleEmpresasSelection = (selectedEmpresa) => {
+    console.log(selectedEmpresa);
+    setSelectedEmpresa(selectedEmpresa);
   };
 
   return (
@@ -175,6 +198,14 @@ const CadastroScreen = () => {
             <SelectList 
             setSelected={handleTurmasSelection} 
             data={turmas} 
+            save="value"
+            />
+        </View>
+        <View style={{...styles.selecoesNotas}}>
+            <Text style={styles.selecao}>Empresa   </Text>
+            <SelectList 
+            setSelected={handleEmpresasSelection} 
+            data={empresas} 
             save="value"
             />
         </View>

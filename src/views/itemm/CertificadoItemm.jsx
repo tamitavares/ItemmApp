@@ -29,7 +29,8 @@ const CertificadoItemm = () => {
         const querySnapshot = await getDocs(p);
         
         console.log('verificado 1')
-        /*const fileData = { nome: pickedDocument.assets[0].nam, uri: pickedDocument.assets[0].uri };
+        const fileData = { nome: pickedDocument.assets[0].nam, uri: pickedDocument.assets[0].uri };
+        /*
         await addDoc(collection(db, 'users',documento.id,'certificado'), fileData);*/
         querySnapshot.docs((documento) => {
           console.log('verificado 2')

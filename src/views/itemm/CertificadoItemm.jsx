@@ -11,13 +11,42 @@ const CertificadoItemm = () => {
   const [alunos, setAlunos] = useState([]);
   const [pickedDocument, setPickedDocument] = useState(null);
 
+  const uploadToFirebase = async () => {
+    if (pickedDocument) {
+      try {
+        
+        const p = query(collection(db, 'users'), where("displayName", "==", selectedAluno));
+        const querySnapshot = await getDocs(p);
+        
+        console.log('verificado 1')
+        /*const fileData = { nome: pickedDocument.assets[0].nam, uri: pickedDocument.assets[0].uri };
+        await addDoc(collection(db, 'users',documento.id,'certificado'), fileData);*/
+        querySnapshot((documento) => {
+          console.log('verificado 2')
+          const docRef = doc(db, 'users', documento.id,'certificado');
+          addDoc(docRef, fileData);
+
+          console.log('verificado 3')
+        });
+
+        setPickedDocument('');        
+
+        Alert.alert('Upload concluído com sucesso!');
+      } catch (error) {
+        console.error('Erro ao enviar para o Firebase:', error);
+      }
+    } else {
+      Alert.alert('Nenhum documento selecionado para enviar.');
+    }
+  };
+
 
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
         type: 'application/pdf', // Você pode definir os tipos de arquivo permitidos
       });
-      
+      console.log(result)
       if (result.assets[0].mimeType === 'application/pdf') {
         setPickedDocument(result);
         console.log('foi!!!!!!!!!!!!!!!!!!!!!!!!!!!')
@@ -49,7 +78,7 @@ const CertificadoItemm = () => {
       // Acesse o array 'assets' para obter detalhes sobre os arquivos
       const type = pickedDocument.assets[0].mimeType;
       const name = pickedDocument.assets[0].name;
-      if (type) {
+      if (type && name) {
         console.log(type)
         console.log(name)
         return;
@@ -60,26 +89,34 @@ const CertificadoItemm = () => {
 
   }, [])
 
-  const atualizarCadastro = async () => {
+  const enviaCertificado = async () => {
     try {
       if (!selectedAluno) {
-        Alert.alert('Selecione um usuário para atualizar o cadastro.');
+        Alert.alert('Selecione um usuário para envio.');
         return;
-      }  
-      
-      /* console.log(selectedAluno)
-      console.log(selectedTurma) */
+      }
+      if (!setPickedDocument) {
+        Alert.alert('Selecione um Documento para envio.');
+        return;
+      }    
 
-      //Alert.alert(selectedAluno)
-      //Alert.alert(selectedTurma)
-      console.log(selectedAluno.uid);
-      await updateDoc(doc(db, 'users', selectedAluno), { "turma": selectedTurma });
-  
-      Alert.alert('Cadastro do aluno atualizado com sucesso!');
-      // Limpar campos ou realizar outras ações necessárias após a atualização.
+      const q = query(collection(db, 'users'), where("displayName", "==", selectedAluno));
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((documento) => {
+
+        const docRef = doc(db, 'users', documento.id);
+        updateDoc(docRef, { "turma": selectedTurma });
+        updateDoc(docRef, { "empresa": selectedEmpresa });
+      });
+
+      
+      
+      Alert.alert('Certificado enviado com sucesso!');
+      
   
     } catch (error) {
-      Alert.alert('Erro ao atualizar cadastro do aluno:', error.message);
+      Alert.alert('Erro ao enviar certificado:', error.message);
     }
   };
 
@@ -88,10 +125,7 @@ const CertificadoItemm = () => {
     setSelectedAluno(selectedAluno);
   };
 
-  const enviaCertificado = () =>{
-    Alert.alert('Certificado enviado.');
-    return;
-  }
+  
 
   return (
     <View style={styles.tela}>
@@ -113,8 +147,12 @@ const CertificadoItemm = () => {
           <Text>Nome do arquivo: {pickedDocument.assets[0].name}</Text>
           <Text>Tipo do arquivo: {pickedDocument.assets[0].mimeType}</Text>
           <Text>Tamanho do arquivo: {pickedDocument.assets[0].size} bytes</Text>
+          <Text>Uri: {pickedDocument.assets[0].uri} </Text>
         </View>
       )}
+
+
+    <Button title = "Enviar certificado Teste" onPress={uploadToFirebase}/>
     
     <Button title = "Enviar certificado" onPress={enviaCertificado}/>
 
@@ -139,3 +177,13 @@ const styles = StyleSheet.create({
     width: 179,
   },
 })
+
+
+
+
+
+/*querySnapshot.forEach((documento) => {
+          const docRef = doc(db, 'users', documento.id,'certificado', 'vUSolFeRmuzsFykthdUo');
+          updateDoc(docRef, { "uri": pickedDocument.assets[0].uri });
+          updateDoc(docRef, { "nome": pickedDocument.assets[0].name });
+        }); */

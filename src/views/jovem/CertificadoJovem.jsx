@@ -1,34 +1,61 @@
 import React, {useState, useEffect} from 'react';
 import { View, Text, Image, StyleSheet, Button, Alert, Linking } from 'react-native';
-import { getStorage, ref, getDownloadURL, listAll } from "firebase/storage";
 import RNPickerSelect from 'react-native-picker-select';
 import { LogBox } from "react-native";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, doc, getDocs, getFirestore, query } from 'firebase/firestore';
+import { db } from '../../../firebaseConfig';
+
 
 LogBox.ignoreLogs(['Invalid prop `textStyle` of type `array` supplied to `Cell']);
 
 export default CertificadoJovem = () => {
 
-  const storage = getStorage();
   const [selectedOption, setSelectedOption] = useState(null);
   const [dropdownOptions, setDropdownOptions] = useState([]);
+  const auth = getAuth();
+  const [currentUser, setCurrentUser] = useState(null);
+  const firestore = getFirestore();
+
 
   useEffect(() => {
     const carregarOpcoesDropdown = async () => {
       try {
-        const storageRef = ref(storage);
-        const listaArquivos = await listAll(storageRef);
-        const opcoes = listaArquivos.items.map(item => ({ label: item.name, value: item.name }));
+        const userId = currentUser ? currentUser.uid : null;
+        const certificadosQuery = query(collection(db, `users/${userId}/certificados`))
+        const certificadosSnapshot = await getDocs(certificadosQuery);
+        const opcoes = [];
+    
+        for (const certificadoDoc of certificadosSnapshot.docs) {
+          const detalhesCollection = collection(certificadoDoc.ref, 'certificado');
+          const detalhesQuery = query(detalhesCollection);
+          const detalhesSnapshot = await getDocs(detalhesQuery);
+
+          detalhesSnapshot.forEach((detalheDoc) => {
+            opcoes.push({
+              label: detalheDoc.data().nome,
+              value: detalheDoc.data().nome,
+            });
+          });
+        }
         setDropdownOptions(opcoes);
       } catch (error) {
         console.error('Erro ao carregar opções de dropdown:', error);
       }
     };
   carregarOpcoesDropdown();
+  }, [currentUser]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+    return () => unsubscribe();
   }, []);
 
   const baixarCertificado = async () => {
     if (selectedOption) {
-      const refCertificado = ref(storage, selectedOption.value);
+      const refCertificado = collection(firestore, selectedOption.value.uri);
       const downloadURL = await getDownloadURL(refCertificado);
       Linking.openURL(downloadURL).catch((err) => console.error('Erro ao abrir o PDF:', err));
       Alert.alert("Certificado baixado");

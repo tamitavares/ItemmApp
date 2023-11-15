@@ -10,10 +10,20 @@ const CertificadoItemm = () => {
   const [selectedAluno, setSelectedAluno] = useState([]);
   const [alunos, setAlunos] = useState([]);
   const [pickedDocument, setPickedDocument] = useState(null);
+  const [usuarios, setUsuarios] = useState([]);
 
   const uploadToFirebase = async () => {
     if (pickedDocument) {
       try {
+
+        if (!selectedAluno) {
+          Alert.alert('Selecione um usuário para envio.');
+          return;
+        }
+        if (!setPickedDocument) {
+          Alert.alert('Selecione um Documento para envio.');
+          return;
+        }   
         
         const p = query(collection(db, 'users'), where("displayName", "==", selectedAluno));
         const querySnapshot = await getDocs(p);
@@ -21,7 +31,7 @@ const CertificadoItemm = () => {
         console.log('verificado 1')
         /*const fileData = { nome: pickedDocument.assets[0].nam, uri: pickedDocument.assets[0].uri };
         await addDoc(collection(db, 'users',documento.id,'certificado'), fileData);*/
-        querySnapshot((documento) => {
+        querySnapshot.docs((documento) => {
           console.log('verificado 2')
           const docRef = doc(db, 'users', documento.id,'certificado');
           addDoc(docRef, fileData);
@@ -29,7 +39,7 @@ const CertificadoItemm = () => {
           console.log('verificado 3')
         });
 
-        setPickedDocument('');        
+        /*  setPickedDocument('');  */      
 
         Alert.alert('Upload concluído com sucesso!');
       } catch (error) {
@@ -49,7 +59,7 @@ const CertificadoItemm = () => {
       console.log(result)
       if (result.assets[0].mimeType === 'application/pdf') {
         setPickedDocument(result);
-        console.log('foi!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        /*console.log('foi!!!!!!!!!!!!!!!!!!!!!!!!!!!')*/
       } else {
         setPickedDocument(null);
       }
@@ -72,6 +82,15 @@ const CertificadoItemm = () => {
         alert('Erro ao buscar as turmas: ' + error.message);
       }
     }
+    async function listarUsuarios() {
+      try {
+        const usuariosSnapshot = await getDocs(collection(db, 'users'));
+        const usuariosData = usuariosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setUsuarios(usuariosData);
+      } catch (error) {
+        console.error('Erro ao buscar usuários:', error.message);
+      }
+    }
     if (pickedDocument) {
       /*console.log('Documentos escolhidos:', pickedDocument);*/
 
@@ -85,41 +104,10 @@ const CertificadoItemm = () => {
       }
     }
 
+    listarUsuarios() 
     getAlunos();
 
   }, [])
-
-  const enviaCertificado = async () => {
-    try {
-      if (!selectedAluno) {
-        Alert.alert('Selecione um usuário para envio.');
-        return;
-      }
-      if (!setPickedDocument) {
-        Alert.alert('Selecione um Documento para envio.');
-        return;
-      }    
-
-      const q = query(collection(db, 'users'), where("displayName", "==", selectedAluno));
-      const querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach((documento) => {
-
-        const docRef = doc(db, 'users', documento.id);
-        updateDoc(docRef, { "turma": selectedTurma });
-        updateDoc(docRef, { "empresa": selectedEmpresa });
-      });
-
-      
-      
-      Alert.alert('Certificado enviado com sucesso!');
-      
-  
-    } catch (error) {
-      Alert.alert('Erro ao enviar certificado:', error.message);
-    }
-  };
-
 
   const handleAlunosSelection = (selectedAluno) => {
     setSelectedAluno(selectedAluno);
@@ -150,11 +138,8 @@ const CertificadoItemm = () => {
           <Text>Uri: {pickedDocument.assets[0].uri} </Text>
         </View>
       )}
-
-
-    <Button title = "Enviar certificado Teste" onPress={uploadToFirebase}/>
     
-    <Button title = "Enviar certificado" onPress={enviaCertificado}/>
+    <Button title = "Enviar certificado" onPress={uploadToFirebase}/>
 
 
     </View>

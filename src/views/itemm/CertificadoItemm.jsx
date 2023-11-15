@@ -35,8 +35,8 @@ const CertificadoItemm = () => {
       
           // Adicionando um documento à subcoleção "certificados"
           const novoCertificado = {
-            nome: pickedDocument.assets[0].name, // Substitua pelo nome desejado
-            uri: pickedDocument.assets[0].uri,   // Substitua pela URI desejada
+            nome: pickedDocument.assets[0].name, 
+            uri: pickedDocument.assets[0].uri,  
           };
       
           await addDoc(collection(alunoDocRef, 'certificados'), novoCertificado);
@@ -46,7 +46,7 @@ const CertificadoItemm = () => {
           console.log('Aluno não encontrado.');
         }
        
-        console.log('verificado 3')
+        /*console.log('verificado 3')*/
 
         setPickedDocument('');  
 
@@ -91,15 +91,7 @@ const CertificadoItemm = () => {
         alert('Erro ao buscar as turmas: ' + error.message);
       }
     }
-    async function listarUsuarios() {
-      try {
-        const usuariosSnapshot = await getDocs(collection(db, 'users'));
-        const usuariosData = usuariosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setUsuarios(usuariosData);
-      } catch (error) {
-        console.error('Erro ao buscar usuários:', error.message);
-      }
-    }
+
     if (pickedDocument) {
       /*console.log('Documentos escolhidos:', pickedDocument);*/
 
@@ -113,7 +105,6 @@ const CertificadoItemm = () => {
       }
     }
 
-    listarUsuarios() 
     getAlunos();
 
   }, [])

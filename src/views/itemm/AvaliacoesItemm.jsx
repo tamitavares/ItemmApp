@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView} from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Image, ScrollView} from 'react-native'
 import React, { useState , useEffect} from 'react'
-import { collection, getDocs, query, addDoc } from "firebase/firestore";
+import { collection, getDocs, query, addDoc, doc, updateDoc, arrayUnion, where } from "firebase/firestore";
 import { db } from './../../../firebaseConfig'
 
-import { MultipleSelectList } from 'react-native-dropdown-select-list'
+import { SelectList } from 'react-native-dropdown-select-list'
 
 const AvaliacoesItemm = () => {
 
@@ -23,19 +23,31 @@ const AvaliacoesItemm = () => {
       try {
         const q = query(collection(db, 'turmas'));
         const turmasDocs = await getDocs(q);
-        const turmasData = [];
-        const alunosData = [];
+        const turmaData = [];
         turmasDocs.forEach((doc) => {
-          turmasData.push(doc.data().Turma); 
-          const alunos = doc.data().Alunos;
-          alunos.forEach((aluno) => {
-            alunosData.push(aluno); 
-          });
+          turmaData.push(doc.data().nome);
         });
-        setTurmas(turmasData);
-        setAlunos(alunosData);
+        setTurmas(turmaData);
+        getAlunos();
       } catch (error) {
         alert('Erro ao buscar as turmas: ' + error.message);
+      }
+    }
+    async function getAlunos() {
+      try {
+        // console.log(turmas)
+        // console.log(selectedTurma)
+        const q = query(collection(db, 'users'), where("turma", "==", selectedTurma));
+        const usersDocs = await getDocs(q);
+        const alunosData = [];
+        usersDocs.forEach((doc) => {
+          alunosData.push(doc.data().displayName)
+        });
+        // console.log(alunosData)
+    
+        setAlunos(alunosData);
+      } catch (error) {
+        alert('Erro ao buscar os alunos: ' + error.message);
       }
     }
     getTurmas();
@@ -43,18 +55,31 @@ const AvaliacoesItemm = () => {
 
   const saveResultsToFirestore = async () => {
     try {
-      await addDoc(collection(db, 'avaliacoes'), {
-        Turma: selectedTurma,
-        Nome: selectedAluno,
-        Metas: selectedMetas,
-        Habilidade: selectedHabilidade,
-        Relacionamento: selectedRelacionamento,
+      if (!selectedAluno) {
+        Alert.alert('Selecione um usuário para atualizar o cadastro.');
+        return;
+      }  
+
+      const q = query(collection(db, 'users'), where("displayName", "==", selectedAluno));
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((documento) => {
+
+        const docRef = doc(db, 'users', documento.id);
+        updateDoc(docRef, { "habilidade": selectedHabilidade });
+        updateDoc(docRef, { "metas": selectedMetas });
+        updateDoc(docRef, { "relacionamento": selectedRelacionamento });
       });
-      alert('Resultados salvos com sucesso!');
+
+  
+      Alert.alert('Cadastro do aluno atualizado com sucesso!');
+      
+  
     } catch (error) {
-      alert('Erro ao salvar os resultados: ' + error.message);
+      Alert.alert('Erro ao atualizar cadastro do aluno:', error.message);
     }
   };
+  
 
   const handleTurmasSelection = (selectedTurma) => {
     setSelectedTurma(selectedTurma);
@@ -63,6 +88,7 @@ const AvaliacoesItemm = () => {
   const handleAlunosSelection = (selectedAluno) => {
     setSelectedAluno(selectedAluno);
   };
+  
 
   const handleMetasSelection = (selectedValues) => {
     setSelectedMetas(selectedValues);
@@ -75,26 +101,6 @@ const AvaliacoesItemm = () => {
   const handleRelacionamentoSelection = (selectedValues) => {
     setSelectedRelacionamento(selectedValues);
   };
-  
-
-  // const turma = [
-  //   {key:'1', value:'Turma 1'},
-  //   {key:'2', value:'Turma 2'},
-  //   {key:'3', value:'Turma 3'},
-  // ]
-
-  // const nome = [
-  //   {key:'1', value:'João'},
-  //   {key:'2', value:'Bruna'},
-  //   {key:'3', value:'Maria'},
-  // ]
-
-  // const dataAvaliacao = [
-  //   {key:'1', value:'10/08/2023'},
-  //   {key:'2', value:'10/09/2023'},
-  //   {key:'3', value:'10/10/2023'},
-  //   {key:'3', value:'10/11/2023'},
-  // ]
 
   const metas = [
     {key:'1', value:'0'},
@@ -123,10 +129,14 @@ const AvaliacoesItemm = () => {
   return (
     <ScrollView style={{flexGrow: 1}}>
     <View style={styles.tela}>
+      <Image
+          style={styles.image}
+          source={require('../images/logo.png')}
+        />
       <Text style={styles.title}>Avaliações</Text>
         <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Turma   </Text>
-            <MultipleSelectList 
+            <SelectList 
             setSelected={handleTurmasSelection} 
             data={turmas} 
             save="value"
@@ -134,15 +144,15 @@ const AvaliacoesItemm = () => {
         </View>
         <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Nome   </Text>
-            <MultipleSelectList 
+            <SelectList 
             setSelected={handleAlunosSelection} 
-            data={alunos} 
+            data={alunos}  
             save="value"
           />
         </View>
         {/* <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Data da Avaliação   </Text>
-            <MultipleSelectList 
+            <SelectList 
             setSelected={(val) => setSelected(val)} 
             data={dataAvaliacao} 
             save="value"
@@ -151,7 +161,7 @@ const AvaliacoesItemm = () => {
         </View> */}
         <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Cumprimento de Metas   </Text>
-            <MultipleSelectList 
+            <SelectList 
             setSelected={handleMetasSelection} 
             data={metas} 
             save="value"
@@ -159,7 +169,7 @@ const AvaliacoesItemm = () => {
         </View>
         <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Habilidade Técnica   </Text>
-            <MultipleSelectList 
+            <SelectList 
             setSelected={handleHabilidadeSelection} 
             data={habilidade} 
             save="value"
@@ -167,7 +177,7 @@ const AvaliacoesItemm = () => {
         </View>
         <View style={{...styles.selecoesNotas, top: 120}}>
             <Text style={styles.selecao}>Relacionamento Interpessoal   </Text>
-            <MultipleSelectList 
+            <SelectList 
             setSelected={handleRelacionamentoSelection} 
             data={relacionamento} 
             save="value"
@@ -197,19 +207,17 @@ const styles = StyleSheet.create({
   },
   image: {
     height: 107,
-    position: 'absolute',
     top: 32,
     width: 179,
   },
   title: {
     color: '#000000',
-    //fontFamily: 'Roboto-Bold',
     fontSize: 23,
     fontWeight: '700',
     left: 21,
     position: 'absolute',
     textAlign: 'left',
-    top: 32,
+    top: 150,
   },
   selecao: {
     color: '#000000',

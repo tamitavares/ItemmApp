@@ -3,7 +3,8 @@ import { View, Text, Image, StyleSheet, Button, Alert, Linking } from 'react-nat
 import RNPickerSelect from 'react-native-picker-select';
 import { LogBox } from "react-native";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, doc, getDocs, getFirestore, query } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, query, where, storage } from 'firebase/firestore';
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { db } from '../../../firebaseConfig';
 
 
@@ -15,35 +16,39 @@ export default CertificadoJovem = () => {
   const [dropdownOptions, setDropdownOptions] = useState([]);
   const auth = getAuth();
   const [currentUser, setCurrentUser] = useState(null);
-  const firestore = getFirestore();
+  const firestore = getFirestore();11
 
 
   useEffect(() => {
     const carregarOpcoesDropdown = async () => {
       try {
         const userId = currentUser ? currentUser.uid : null;
-        const certificadosQuery = query(collection(db, `users/${userId}/certificados`))
-        const certificadosSnapshot = await getDocs(certificadosQuery);
-        const opcoes = [];
-    
-        for (const certificadoDoc of certificadosSnapshot.docs) {
-          const detalhesCollection = collection(certificadoDoc.ref, 'certificado');
-          const detalhesQuery = query(detalhesCollection);
-          const detalhesSnapshot = await getDocs(detalhesQuery);
-
-          detalhesSnapshot.forEach((detalheDoc) => {
+        console.log('UserID:', userId); // Log do UserID
+  
+        const userQuery = query(collection(db, 'users'), where('uid', '==', userId));
+        const userSnapshot = await getDocs(userQuery);
+  
+        if (!userSnapshot.empty) {
+          const userDoc = userSnapshot.docs[0]; // Pegamos o primeiro documento, pois esperamos que apenas um usuário corresponda ao uid
+          const certificadosQuery = query(collection(userDoc.ref, 'certificados'));
+          const certificadosSnapshot = await getDocs(certificadosQuery);
+          const opcoes = [];
+  
+          certificadosSnapshot.forEach((certificadoDoc) => {
             opcoes.push({
-              label: detalheDoc.data().nome,
-              value: detalheDoc.data().nome,
+              label: certificadoDoc.data().nome,
+              value: certificadoDoc.data().nome,
             });
           });
+          setDropdownOptions(opcoes);
+        } else {
+          console.log('Nenhum usuário encontrado com o uid:', userId);
         }
-        setDropdownOptions(opcoes);
       } catch (error) {
         console.error('Erro ao carregar opções de dropdown:', error);
       }
     };
-  carregarOpcoesDropdown();
+    carregarOpcoesDropdown();
   }, [currentUser]);
 
   useEffect(() => {
@@ -53,12 +58,19 @@ export default CertificadoJovem = () => {
     return () => unsubscribe();
   }, []);
 
+  const storage = getStorage();
+
   const baixarCertificado = async () => {
     if (selectedOption) {
-      const refCertificado = collection(firestore, selectedOption.value.uri);
-      const downloadURL = await getDownloadURL(refCertificado);
-      Linking.openURL(downloadURL).catch((err) => console.error('Erro ao abrir o PDF:', err));
-      Alert.alert("Certificado baixado");
+      const storageRef = ref(storage, selectedOption.value.uri);
+      getDownloadURL(storageRef)
+        .then((url) => {
+          Linking.openURL(url).catch((err) => console.error('Erro ao abrir o PDF:', err));
+          Alert.alert("Certificado baixado");
+        })
+        .catch((error) => {
+          console.error('Erro ao baixar o certificado:', error);
+        });
     } else {
       Alert.alert('Selecione uma opção antes de baixar o certificado');
     }
